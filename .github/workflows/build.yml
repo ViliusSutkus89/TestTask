@@ -1,4 +1,4 @@
-# test.yml
+# build.yml
 #
 # Copyright (C) 2022 https://www.ViliusSutkus89.com/i-am-speed/
 #
@@ -21,7 +21,7 @@ on:
     paths-ignore:
       - '**.md'
       - '.github/**'
-      - '!.github/workflows/test.yml'
+      - '!.github/workflows/build.yml'
 
 permissions:
   actions: none
