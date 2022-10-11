@@ -19,7 +19,29 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import java.util.regex.Pattern
 
+private fun verifyEmailRules(email: String): Boolean {
+    // android.util.Patterns.EMAIL_ADDRESS is not ok, because it doesn't match ~@ViliusSutkus89.com,
+    // which is a perfectly fine email
+
+    // Replace the part before @ with .{1,256}, because according to whatever the RFC defines
+    // email addresses, it's up to the receiving mail server to decide what's a good email.
+
+    return Pattern.compile(
+        ".{1,256}" +
+                "@" +
+                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                "(" +
+                "\\." +
+                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                ")+"
+    ).matcher(email).matches()
+}
+
+private fun verifyPasswordRules(password: String): Boolean {
+    return password.length >= 6
+}
 
 @Composable
 private fun LoginScreenStateless(
@@ -120,13 +142,12 @@ internal fun LoginScreen(
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var emailFocusTracker by rememberSaveable { mutableStateOf(FocusStateTracker.NeverFocused) }
-    // @TODO: this doesn't match ~@mydomain.com , but "~" is completely valid username
-    val emailIsValid = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    val emailIsValid = verifyEmailRules(email)
     val emailShowError = emailFocusTracker == FocusStateTracker.NoLongerFocused && !emailIsValid
 
     var password by rememberSaveable { mutableStateOf("") }
     var passwordFocusTracker by rememberSaveable { mutableStateOf(FocusStateTracker.NeverFocused) }
-    val passwordIsValid =  password.length >= 6
+    val passwordIsValid = verifyPasswordRules(password)
     val passwordShowError = passwordFocusTracker == FocusStateTracker.NoLongerFocused && !passwordIsValid
 
     LoginScreenStateless(
