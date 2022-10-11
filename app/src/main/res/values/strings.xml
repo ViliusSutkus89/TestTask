@@ -6,4 +6,8 @@
     <string name="login_label_password">Password</string>
     <string name="login_error_password">Password is too short</string>
     <string name="login_button">Login</string>
+    <string name="search_title">Search</string>
+    <string name="search_query_label">Enter name to search</string>
+    <string name="failed_to_fetch_from_internet">Failed to fetch resource from the internet</string>
+    <string name="no_persons_found">No persons found</string>
 </resources>
