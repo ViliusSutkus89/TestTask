@@ -16,6 +16,11 @@ android {
         versionCode 1
         versionName "0.9.0"
 
+        if (project.hasProperty('test_build')) {
+            versionNameSuffix = ".unreleased"
+            applicationIdSuffix = ".unreleased"
+        }
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
@@ -27,6 +32,10 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            versionNameSuffix = ".debug"
+            applicationIdSuffix = ".debug"
         }
     }
     compileOptions {
