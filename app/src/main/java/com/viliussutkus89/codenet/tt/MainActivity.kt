@@ -3,6 +3,7 @@ package com.viliussutkus89.codenet.tt
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -18,6 +19,8 @@ import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
+    private val viewModel: TestTaskViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -26,7 +29,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    TestTaskComposeApp()
+                    TestTaskComposeApp(viewModel)
                 }
             }
         }
@@ -88,7 +91,7 @@ internal class TestTaskViewModel: ViewModel() {
 }
 
 @Composable
-internal fun TestTaskComposeApp(viewModel: TestTaskViewModel = TestTaskViewModel()) {
+internal fun TestTaskComposeApp(viewModel: TestTaskViewModel) {
     val isLoggedIn by viewModel.isLoggedIn.observeAsState(false)
     if (isLoggedIn) {
         SearchScreen(viewModel)
@@ -105,7 +108,7 @@ private fun PreviewTestTaskComposeApp() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colors.background
         ) {
-            TestTaskComposeApp()
+            TestTaskComposeApp(viewModel = TestTaskViewModel())
         }
     }
 }
