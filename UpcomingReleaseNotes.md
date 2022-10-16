@@ -1,2 +1,0 @@
-- Less ugly UI
-- handle enter key in login screen
