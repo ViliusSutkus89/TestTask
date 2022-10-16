@@ -100,5 +100,12 @@ internal fun TestTaskComposeApp(viewModel: TestTaskViewModel = TestTaskViewModel
 @Preview(showBackground = true)
 @Composable
 private fun PreviewTestTaskComposeApp() {
-    TestTaskComposeApp()
+    TestTaskTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colors.background
+        ) {
+            TestTaskComposeApp()
+        }
+    }
 }

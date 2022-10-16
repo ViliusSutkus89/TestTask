@@ -1,25 +1,29 @@
 package com.viliussutkus89.codenet.tt
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import com.viliussutkus89.codenet.tt.ui.theme.TestTaskTheme
 import java.util.regex.Pattern
+
 
 private fun verifyEmailRules(email: String): Boolean {
     // android.util.Patterns.EMAIL_ADDRESS is not ok, because it doesn't match ~@ViliusSutkus89.com,
@@ -58,47 +62,107 @@ private fun LoginScreenStateless(
     loginEnabled: Boolean,
     onLogin: () -> Unit = {}
 ) {
-    Column {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Text(
             text = stringResource(R.string.login_title),
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Column(
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()
-        )
+        ) {
+            OutlinedTextField(
+                value = email,
+                label = { Text(stringResource(R.string.login_label_email)) },
+                onValueChange = emailOnUpdate,
+                singleLine = true,
+                isError = emailError,
+                modifier = Modifier
+                    .onFocusChanged { emailOnFocusChange(it.isFocused) }
+                    .fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                shape = RoundedCornerShape(8.dp),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    backgroundColor = MaterialTheme.colors.secondary,
+                    // Error color not applied to unfocused label
+                    unfocusedLabelColor = if (emailError) {
+                        MaterialTheme.colors.error
+                    } else {
+                        MaterialTheme.colors.onSecondary
+                    },
+                    textColor = if (emailError) {
+                        MaterialTheme.colors.error
+                    } else {
+                        MaterialTheme.colors.onSecondary
+                    },
+                )
+            )
 
-        TextField(
-            value = email,
-            label = { Text(stringResource(R.string.login_label_email)) },
-            onValueChange = emailOnUpdate,
-            singleLine = true,
-            isError = emailError,
-            modifier = Modifier.onFocusChanged { emailOnFocusChange(it.isFocused) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-        )
-
-        if (emailError) {
-            Text(stringResource(R.string.login_error_email_format))
+            if (emailError) {
+                Text(
+                    text = stringResource(R.string.login_error_email_format),
+                    color = MaterialTheme.colors.error
+                )
+            }
         }
 
-        TextField(
-            value = password,
-            label = { Text(stringResource(R.string.login_label_password)) },
-            onValueChange = passwordOnUpdate,
-            singleLine = true,
-            isError = passwordError,
-            modifier = Modifier.onFocusChanged { passwordOnFocusChange(it.isFocused) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            visualTransformation = PasswordVisualTransformation()
-        )
+        Column (modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth()
+        ) {
+            OutlinedTextField(
+                value = password,
+                label = {
+                    Text(stringResource(R.string.login_label_password))
+                },
+                onValueChange = passwordOnUpdate,
+                singleLine = true,
+                isError = passwordError,
+                modifier = Modifier
+                    .onFocusChanged { passwordOnFocusChange(it.isFocused) }
+                    .fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                visualTransformation = PasswordVisualTransformation(),
+                shape = RoundedCornerShape(8.dp),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    backgroundColor = MaterialTheme.colors.secondary,
+                    // Error color not applied to unfocused label
+                    unfocusedLabelColor = if (passwordError) {
+                        MaterialTheme.colors.error
+                    } else {
+                        MaterialTheme.colors.onSecondary
+                    },
+                    textColor = if (passwordError) {
+                        MaterialTheme.colors.error
+                    } else {
+                        MaterialTheme.colors.onSecondary
+                    },
+                )
+            )
 
-        if (passwordError) {
-            Text(stringResource(R.string.login_error_password))
+            if (passwordError) {
+                Text(
+                    text = stringResource(R.string.login_error_password),
+                    color = MaterialTheme.colors.error
+                )
+            }
         }
-
 
         Button(
             enabled = loginEnabled,
-            onClick = onLogin
+            onClick = onLogin,
+            modifier = Modifier
+                .padding(16.dp)
+                .height(48.dp)
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(8.dp),
         ) {
             Text(stringResource(R.string.login_button))
         }
@@ -106,28 +170,80 @@ private fun LoginScreenStateless(
 }
 
 
-@Preview(showBackground = true)
-@Composable
-private fun PreviewLoginScreenStateless() {
-    LoginScreenStateless(
-        email = "vilius@ViliusSutkus89.com",
-        emailError = false,
-        password = "123456",
-        passwordError = false,
-        loginEnabled = true
+data class LoginScreenPreviewData(
+    val name: String,
+    val email: String,
+    val emailError: Boolean? = null,
+
+    val password: String,
+    val passwordError: Boolean? = null,
+
+    val loginEnabled: Boolean
+)
+
+class LoginScreenPreviewDataProvider: PreviewParameterProvider<LoginScreenPreviewData> {
+    override val values: Sequence<LoginScreenPreviewData> get() = sequenceOf(
+        LoginScreenPreviewData(
+            name = "Empty screen",
+            email = "",
+            emailError = false,
+            password = "",
+            passwordError = false,
+            loginEnabled = true
+        ),
+        LoginScreenPreviewData(
+            name = "Proper input",
+            email = "~@ViliusSutkus89.com",
+            password = "123456",
+            loginEnabled = true
+        ),
+        LoginScreenPreviewData(
+            name = "Bad email, good password",
+            email = "~@ViliusSutkus89.",
+            password = "123456",
+            loginEnabled = false
+        ),
+        LoginScreenPreviewData(
+            name = "Good email, bad password",
+            email = "~@ViliusSutkus89.com",
+            password = "12345",
+            loginEnabled = false
+        ),
+        LoginScreenPreviewData(
+            name = "Attempted empty login",
+            email = "",
+            password = "",
+            loginEnabled = false
+        ),
     )
+    override val count: Int = values.count()
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun PreviewLoginScreenStateless2() {
-    LoginScreenStateless(
-        email = "",
-        emailError = true,
-        password = "123456",
-        passwordError = false,
-        loginEnabled = false
-    )
+private fun PreviewLoginScreenStateless(
+    @PreviewParameter(LoginScreenPreviewDataProvider::class)
+    data: LoginScreenPreviewData
+) {
+    TestTaskTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colors.background
+        ) {
+            LoginScreenStateless(
+                email = data.email,
+                emailError = data.emailError?.let { data.emailError } ?: run {
+                    !verifyEmailRules(
+                        data.email
+                    )
+                },
+                password = data.password,
+                passwordError = data.passwordError?.let { data.passwordError }
+                    ?: run { !verifyPasswordRules(data.password) },
+                loginEnabled = data.loginEnabled
+            )
+        }
+    }
 }
 
 private enum class FocusStateTracker {
@@ -184,8 +300,3 @@ internal fun LoginScreen(
     )
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun PreviewLoginScreen() {
-    LoginScreen { _, _ ->  }
-}
