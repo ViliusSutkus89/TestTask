@@ -2,6 +2,7 @@ package com.viliussutkus89.codenet.tt
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -11,7 +12,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -73,6 +76,8 @@ private fun LoginScreenStateless(
             modifier = Modifier.fillMaxWidth()
         )
 
+        val focusManager = LocalFocusManager.current
+
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -102,6 +107,14 @@ private fun LoginScreenStateless(
                     } else {
                         MaterialTheme.colors.onSecondary
                     },
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    },
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    }
                 )
             )
 
@@ -144,6 +157,22 @@ private fun LoginScreenStateless(
                     } else {
                         MaterialTheme.colors.onSecondary
                     },
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        if (emailError) {
+                            focusManager.moveFocus(FocusDirection.Up)
+                        } else if (!passwordError) {
+                            onLogin()
+                        }
+                    },
+                    onNext = {
+                        if (emailError) {
+                            focusManager.moveFocus(FocusDirection.Up)
+                        } else if (!passwordError) {
+                            onLogin()
+                        }
+                    }
                 )
             )
 
